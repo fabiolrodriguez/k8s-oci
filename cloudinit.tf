@@ -34,7 +34,7 @@ data "cloudinit_config" "_" {
       apt:
         sources:
           kubernetes.list:
-            source: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+            source: "deb https://packages.cloud.google.com/apt/ kubernetes-xenial main"
             key: |
               ${indent(8, data.http.apt_repo_key.body)}
       users:
@@ -70,6 +70,11 @@ data "cloudinit_config" "_" {
           apiServer:
             certSANs:
             - @@PUBLIC_IP_ADDRESS@@
+          networking:
+            podSubnet: 10.244.0.0/16
+          controllerManager: 
+            extraArgs:
+              bind-address: 0.0.0.0            
       - path: /home/k8s/.ssh/id_rsa
         defer: true
         owner: "k8s:k8s"
@@ -92,7 +97,7 @@ data "cloudinit_config" "_" {
     content_type = "text/x-shellscript"
     content      = <<-EOF
       #!/bin/sh
-      sed -i "s/-A INPUT -j REJECT --reject-with icmp-host-prohibited//" /etc/iptables/rules.v4 
+      sed -i "s/-A INPUT -j REJECT --reject-with icmp-host-prohibited//" /etc/iptables/rules.v4
       netfilter-persistent start
     EOF
   }
@@ -108,11 +113,12 @@ data "cloudinit_config" "_" {
         sed -i s/@@PUBLIC_IP_ADDRESS@@/$PUBLIC_IP_ADDRESS/ /etc/kubeadm_config.yaml
         kubeadm init --config=/etc/kubeadm_config.yaml --ignore-preflight-errors=NumCPU
         export KUBECONFIG=/etc/kubernetes/admin.conf
-        kubever=$(kubectl version | base64 | tr -d '\n')
-        kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$kubever
+        kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
         mkdir -p /home/k8s/.kube
         cp $KUBECONFIG /home/k8s/.kube/config
         chown -R k8s:k8s /home/k8s/.kube
+        sudo ufw disable
+        sudo iptables -F
       EOF
     }
   }

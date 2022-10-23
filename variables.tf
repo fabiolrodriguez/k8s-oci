@@ -1,6 +1,6 @@
 variable "name" {
   type    = string
-  default = "kubernetes-on-arm-with-oracle"
+  default = "kubernetes-fabio"
 }
 
 /*
@@ -12,10 +12,14 @@ Available flex shapes:
 "VM.Standard.E4.Flex" # AMD Milan
 */
 
+variable "region"{
+  type = string
+  default = "us-ashburn-1"
+}
+
 variable "shape" {
   type    = string
   default = "VM.Standard.A1.Flex"
-  # default = "VM.Standard.E4.Flex"
 }
 
 variable "how_many_nodes" {
