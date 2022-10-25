@@ -69,12 +69,7 @@ data "cloudinit_config" "_" {
           apiVersion: kubeadm.k8s.io/v1beta2
           apiServer:
             certSANs:
-            - @@PUBLIC_IP_ADDRESS@@
-          networking:
-            podSubnet: 10.244.0.0/16
-          controllerManager: 
-            extraArgs:
-              bind-address: 0.0.0.0            
+            - @@PUBLIC_IP_ADDRESS@@      
       - path: /home/k8s/.ssh/id_rsa
         defer: true
         owner: "k8s:k8s"
@@ -113,7 +108,7 @@ data "cloudinit_config" "_" {
         sed -i s/@@PUBLIC_IP_ADDRESS@@/$PUBLIC_IP_ADDRESS/ /etc/kubeadm_config.yaml
         kubeadm init --config=/etc/kubeadm_config.yaml --ignore-preflight-errors=NumCPU
         export KUBECONFIG=/etc/kubernetes/admin.conf
-        kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
+        kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
         mkdir -p /home/k8s/.kube
         cp $KUBECONFIG /home/k8s/.kube/config
         chown -R k8s:k8s /home/k8s/.kube
@@ -131,6 +126,8 @@ data "cloudinit_config" "_" {
       content      = <<-EOF
       #!/bin/sh
       kubeadm join --discovery-token-unsafe-skip-ca-verification --token ${local.kubeadm_token} ${local.nodes[1].ip_address}:6443
+      sudo ufw disable
+      iptables -F
     EOF
     }
   }
