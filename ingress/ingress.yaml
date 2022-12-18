@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: magic-app
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  rules:
+  - host: magic.fabio.monster
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service: 
+            name: magic-pod
+            port: 
+              number: 8080
+  - host: grafana.fabio.monster
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service: 
+            name: prometheus-grafana
+            port: 
+              number: 80
+
+  - host: prom.fabio.monster
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service: 
+            name: prometheus-kube-prometheus-prometheus
+            port: 
+              number: 9090
+  tls:
+  - hosts:
+    - magic.fabio.monster
+    - grafana.fabio.monster
+    - prom.fabio.monster
+    secretName: echo-tls
+
+

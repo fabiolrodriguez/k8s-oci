@@ -1,0 +1,15 @@
+config:
+  modules:
+    http_2xx:
+      prober: http
+      timeout: 2s
+      http:
+        follow_redirects: true
+    http_k8s:
+      prober: http
+      timeout: 2s
+      http:
+        follow_redirects: true
+        bearer_token: /var/run/secrets/kubernetes.io/serviceaccount/token
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt

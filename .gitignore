@@ -34,3 +34,5 @@ id_rsa*
 # K8s
 kubeconfig
 config
+id_rsa
+id_rsa.pub

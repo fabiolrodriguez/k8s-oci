@@ -1,5 +1,5 @@
 # k8s-oci
-k8s-oci
+This is an WIP repo for k8s-oci
 
 Based on https://github.com/jpetazzo/ampernetacle
 
@@ -220,3 +220,15 @@ tail -n 100 -f /var/log/cloud-init-output.log
 [kubeadm]: https://kubernetes.io/docs/reference/setup-tools/kubeadm/
 [oci]: https://www.oracle.com/cloud/compute/
 [oke]: https://www.oracle.com/cloud-native/container-engine-kubernetes/
+
+
+## Cert Manager
+
+```
+kubectl create namespace cert-manager
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.yaml
+```
+
+```
+kubectl get pods --namespace cert-manager
+```

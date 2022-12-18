@@ -1,0 +1,18 @@
+additionalScrapeConfigs: 
+      - job_name: 'uptime-check-endpoint'
+        metrics_path: /probe
+        params:
+          module: [http_2xx]
+        static_configs:
+          - targets:
+            - https://google.com
+            - https://abc.com:8080
+            - http://prom.fabio.monster
+                
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: prometheus-blackbox-exporter:9115

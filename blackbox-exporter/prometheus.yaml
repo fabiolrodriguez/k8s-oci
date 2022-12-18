@@ -1,0 +1,25 @@
+prometheus.yaml: |
+  global:
+    scrape_interval: 10s
+  scrape_configs:
+  - job_name: blackbox
+    metrics_path: /probe
+    params:
+      module:
+      - http_2xx
+    relabel_configs:
+    - source_labels:
+      - __address__
+      target_label: __param_target
+    - source_labels:
+      - __param_target
+      target_label: instance
+    - replacement: blackbox-service:9115	# Blackbox hostname:port
+      target_label: __address__
+    static_configs:
+    - targets:
+      - http://front-end.sock-shop.svc.cluster.local
+      - https://docs.sysdig.com/
+      - https://promcat.io
+      - https://api.promcat.io/apps
+      - https://my.failing.app
