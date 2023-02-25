@@ -27,7 +27,6 @@ spec:
             name: prometheus-grafana
             port: 
               number: 80
-
   - host: prom.fabio.monster
     http:
       paths:
@@ -38,11 +37,23 @@ spec:
             name: prometheus-kube-prometheus-prometheus
             port: 
               number: 9090
+  - host: wiki.fabio.monster
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service: 
+            name: wikijs
+            port: 
+              number: 80
+
   tls:
   - hosts:
     - magic.fabio.monster
     - grafana.fabio.monster
     - prom.fabio.monster
+    - wiki.fabio.monster
     secretName: echo-tls
 
 
