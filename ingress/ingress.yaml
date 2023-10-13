@@ -47,6 +47,16 @@ spec:
             name: wikijs
             port: 
               number: 80
+  - host: argocd.fabio.monster
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service: 
+            name: my-argocd-server
+            port: 
+              number: 80
 
   tls:
   - hosts:
@@ -54,6 +64,7 @@ spec:
     - grafana.fabio.monster
     - prom.fabio.monster
     - wiki.fabio.monster
+    - argocd.fabio.monster
     secretName: echo-tls
 
 
